@@ -1,0 +1,40 @@
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: gray;
+    -fx-text-fill: white;
+    -fx-border-radius: 10;
+    -fx-background-radius: 2;
+}
+
+.list-cell:even {
+    -fx-background-color: white;
+    -fx-border-radius: 10;
+    -fx-background-radius: 2;
+    
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #5a5b5c;
+    -fx-text-fill: white;
+    -fx-border-radius: 10;
+    -fx-background-radius: 2;
+}
+.list-view{
+    -fx-padding: 3;
+    -fx-background-insets: 0;
+}
+
+.button{
+    -fx-border-radius: 5px;
+    -fx-background-color: #6675e8;
+    -fx-font-weight: bold;
+    -fx-font-size: 12;
+    -fx-border-color: transparent;
+    -fx-padding: 1;
+    -fx-border-width: 0;
+}
+.button:hover{
+    -fx-background-color: #94a0ff;
+    -fx-border-radius: 5px;
+    -fx-border-color: transparent;
+    -o-animation-duration: 5s;
+}
