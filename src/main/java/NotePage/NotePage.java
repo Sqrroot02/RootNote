@@ -19,6 +19,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import Base.Page;
 import javafx.scene.text.Text;
@@ -53,15 +54,15 @@ public class NotePage extends Page {
 
         // Init Button
         createNewButton.addEventHandler(MouseEvent.MOUSE_CLICKED,createButtonClickedEvent);
-
-
         createNewButton.setText("New Note");
 
         noteSelectionPane.setCenter(listView);
         noteSelectionPane.setBottom(createNewButton);
         root.setLeft(noteSelectionPane);
 
-        root.setRight(new CustomEditor().getPane());
+        VBox rightContainer = new VBox(new SettingsFrame(),new CustomEditor().getPane());
+        root.setRight(rightContainer);
+
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("/listviewStyles.css").toExternalForm());
         setUsedScene(scene);

@@ -10,21 +10,25 @@ public class SettingsFrame extends HBox {
 
     private TabPane pane;
 
-    private Tab drawTab;
+    private WriteTab drawTab;
     private Tab writeTab;
     private Tab layoutTab;
     private Tab mediaTab;
 
     public SettingsFrame(){
-
+        InitControls();
     }
 
     private void InitControls(){
-
+        pane = new TabPane();
+        pane.setMinHeight(300);
+        InitWriteTab();
     }
 
-    private void InitDrawTab(){
-
+    private void InitWriteTab(){
+        drawTab = new WriteTab();
+        pane.getTabs().add(drawTab);
+        getChildren().add(pane);
     }
 
 }

@@ -2,6 +2,7 @@ package NotePage;
 
 import Base.Helper.ColorHelper;
 import NotePage.HTMLHelper.CSSBorder;
+import javafx.css.CssMetaData;
 import javafx.css.converter.ColorConverter;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
@@ -16,6 +17,8 @@ import org.w3c.dom.*;
 import org.w3c.dom.ranges.Range;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class CustomEditor {
@@ -24,7 +27,8 @@ public class CustomEditor {
         public void onTextChanged(String s);
     }
 
-    WebView view;
+    // Used Webview
+    private WebView view;
 
     private TextSelectionChangedListener selectionChangedListener = new TextSelectionChangedListener() {
         @Override
@@ -57,21 +61,118 @@ public class CustomEditor {
 
     }
 
-    private Color textForegroundColor = Color.BLACK;
-    private Color textBackgroundColor = Color.TRANSPARENT;
-    private CSSBorder textBorder = null;
-    private Boolean hasTextBorder = false;
-    private String textFontFamily = "arial";
-    private int textSize = 25;
+    // region Properties
+    // Text Alignment
     private String textAlignment = "left";
-    private String textDecorationLine = "";
-    private Color textDecorationColor = Color.BLACK;
-    private String textDecorationStyle = "wavy";
-    private int textDecorationThickness = 5;
-    private String textTransformation = "";
-    private String textFormat = "";
+    public void setTextAlignment(String textAlignment) {
+        this.textAlignment = textAlignment;
+    }
+    public String getTextAlignment() {
+        return textAlignment;
+    }
 
-    public String getCss(){
+    // Text Background
+    private Color textBackgroundColor = Color.TRANSPARENT;
+    public void setTextBackgroundColor(Color textBackgroundColor) {
+        this.textBackgroundColor = textBackgroundColor;
+    }
+    public Color getTextBackgroundColor() {
+        return textBackgroundColor;
+    }
+
+    // Text Border
+    private CSSBorder textBorder = null;
+    public void setTextBorder(CSSBorder textBorder) {
+        this.textBorder = textBorder;
+    }
+    public CSSBorder getTextBorder() {
+        return textBorder;
+    }
+
+    // Text Decoration Color
+    private Color textDecorationColor = Color.BLACK;
+    public void setTextDecorationColor(Color textDecorationColor) {
+        this.textDecorationColor = textDecorationColor;
+    }
+    public Color getTextDecorationColor() {
+        return textDecorationColor;
+    }
+
+    // Text Decoration Line
+    private String textDecorationLine = "";
+    public void setTextDecorationLine(String textDecorationLine) {
+        this.textDecorationLine = textDecorationLine;
+    }
+    public String getTextDecorationLine() {
+        return textDecorationLine;
+    }
+
+    // Text Decoration Style
+    private String textDecorationStyle = "wavy";
+    public void setTextDecorationStyle(String textDecorationStyle) {
+        this.textDecorationStyle = textDecorationStyle;
+    }
+    public String getTextDecorationStyle() {
+        return textDecorationStyle;
+    }
+
+    // Text Decoration Thickness
+    private int textDecorationThickness = 5;
+    public void setTextDecorationThickness(int textDecorationThickness) {
+        this.textDecorationThickness = textDecorationThickness;
+    }
+    public int getTextDecorationThickness() {
+        return textDecorationThickness;
+    }
+
+    // Text Font Family
+    private String textFontFamily = "arial";
+    public void setTextFontFamily(String textFontFamily) {
+        this.textFontFamily = textFontFamily;
+    }
+    public String getTextFontFamily() {
+        return textFontFamily;
+    }
+
+    // Text Foreground
+    private Color textForegroundColor = Color.BLACK;
+    public void setTextForegroundColor(Color textForegroundColor) {
+        this.textForegroundColor = textForegroundColor;
+    }
+    public Color getTextForegroundColor() {
+        return textForegroundColor;
+    }
+
+    // Text Size
+    private int textSize = 25;
+    public void setTextSize(int textSize) {
+        this.textSize = textSize;
+    }
+    public int getTextSize() {
+        return textSize;
+    }
+
+    // Text Format
+    private String textFormat = "";
+    public void setTextFormat(String textFormat) {
+        this.textFormat = textFormat;
+    }
+    public String getTextFormat() {
+        return textFormat;
+    }
+
+    // Text Transformation
+    private String textTransformation = "";
+    public void setTextTransformation(String textTransformation) {
+        this.textTransformation = textTransformation;
+    }
+    public String getTextTransformation() {
+        return textTransformation;
+    }
+
+    // endregion
+
+    private String getCss(){
         String result = "";
         result += MessageFormat.format("color:{0};", ColorHelper.toHexString(textForegroundColor));
         result += MessageFormat.format("background-color:{0};",ColorHelper.toHexString(textBackgroundColor));
@@ -98,6 +199,15 @@ public class CustomEditor {
         view.addEventHandler(KeyEvent.KEY_PRESSED,keyboardPressed);
     }
 
+    public void changePartSettings(){
+        int anchorOffset = (int) getEngine().executeScript("window.getSelection().anchorOffset");
+        int focusOffset = (int) getEngine().executeScript("window.getSelection().focusOffset");
+
+        int range = (int) getEngine().executeScript("window.getSelection().getRangeAt(0)");
+        System.out.println(range);
+
+    }
+
     public EventHandler<MouseEvent> mouseReleasedEvent = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
@@ -110,6 +220,7 @@ public class CustomEditor {
                 cursor.setNewPosition(UUID.fromString(readId), offset);
                 selectionChangedListener.onTextChanged(selectedString);
             }
+            changePartSettings();
         }
     };
 
