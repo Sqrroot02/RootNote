@@ -156,6 +156,29 @@ public class CustomEditor {
         return textTransformation;
     }
 
+    private String textWeight = "normal";
+    public void setTextWeight(String textWeight) {
+        this.textWeight = textWeight;
+    }
+    public String getTextWeight(){
+        return textWeight;
+    }
+
+    private String fontStyle = "normal";
+    public void setFontStyle(String fontStyle) {
+        this.fontStyle = fontStyle;
+    }
+    public String getFontStyle() {
+        return fontStyle;
+    }
+
+    private String textDecoration = "normal";
+    public String getTextDecoration() {
+        return textDecoration;
+    }
+    public void setTextDecoration(String textDecoration) {
+        this.textDecoration = textDecoration;
+    }
     // endregion
 
     private String getCss(){
@@ -164,6 +187,9 @@ public class CustomEditor {
         result += MessageFormat.format("background-color:{0};",ColorHelper.toHexString(textBackgroundColor));
         result += MessageFormat.format("font-family:{0};",textFontFamily);
         result += MessageFormat.format("text-align:{0};font-size:{1}px;",textAlignment,textSize);
+        result += MessageFormat.format("font-weight:{0};",textWeight);
+        result += MessageFormat.format("font-style:{0};",fontStyle);
+        result += MessageFormat.format("text-decoration:{0};", textDecoration);
         if (!textDecorationLine.isEmpty()){
             result += MessageFormat.format("text-decoration-line:{0};text-decoration-color:rgb({1},{2},{3});text-decoration-style:{4};text-decoration-thickness:{5};",textDecorationLine,textDecorationColor.getRed(),textDecorationColor.getGreen(),textDecorationColor.getBlue(),textDecorationStyle,textDecorationThickness);
         }
@@ -222,7 +248,82 @@ public class CustomEditor {
         writeOptionsTab.setFontFamilyChangedListener(((event) ->{
             String selectedFont = writeOptionsTab.getFontFamilySelection().getSelectionModel().getSelectedItem();
             textFontFamily = selectedFont;
-            System.out.println("yee");
+            applyChanges();
+        }));
+
+        writeOptionsTab.setFontSizeChangedListener((event -> {
+            String selectedSize = writeOptionsTab.getFontSizeSelection().getSelectionModel().getSelectedItem();
+            textSize = Integer.parseInt(selectedSize);
+            applyChanges();
+        }));
+
+        writeOptionsTab.setFontForegroundListener((event -> {
+            Color selectedColor = writeOptionsTab.getFontForegroundSelection().getValue();
+            textForegroundColor = selectedColor;
+            applyChanges();
+        }));
+
+        writeOptionsTab.setFontBackgroundListener((event -> {
+            Color selectedColor = writeOptionsTab.getFontBackgroundPicker().getValue();
+            textBackgroundColor = selectedColor;
+            applyChanges();
+        }));
+
+        writeOptionsTab.setFontBoldListener((event -> {
+            boolean toogleResult = writeOptionsTab.getFontBoldToggle().isSelected();
+            if (toogleResult){
+                textWeight = "bold";
+            }
+            else {
+                textWeight = "normal";
+            }
+            applyChanges();
+        }));
+
+        writeOptionsTab.setFontItalicListener((event -> {
+            boolean toggleResult = writeOptionsTab.getFontItalicToggle().isSelected();
+            if (toggleResult){
+                fontStyle = "italic";
+            }
+            else {
+                fontStyle = "normal";
+            }
+            applyChanges();
+        }));
+
+        writeOptionsTab.setFontStrikeThroughListener((event -> {
+            boolean toggleStrikeResult = writeOptionsTab.getFontStrikeThroughToggle().isSelected();
+            boolean toggleUnderlineResult = writeOptionsTab.getFontUnderlineToggle().isSelected();
+            if (toggleStrikeResult && toggleUnderlineResult){
+                textDecoration = "line-through underline";
+            }
+            else if (toggleStrikeResult){
+                textDecoration = "line-through";
+            }
+            else if (toggleUnderlineResult){
+                textDecoration = "underline";
+            }
+            else {
+                textDecoration = "normal";
+            }
+            applyChanges();
+        }));
+
+        writeOptionsTab.setFontUnderlineListener((event -> {
+            boolean toggleStrikeResult = writeOptionsTab.getFontStrikeThroughToggle().isSelected();
+            boolean toggleUnderlineResult = writeOptionsTab.getFontUnderlineToggle().isSelected();
+            if (toggleStrikeResult && toggleUnderlineResult){
+                textDecoration = "line-through underline";
+            }
+            else if (toggleStrikeResult){
+                textDecoration = "line-through";
+            }
+            else if (toggleUnderlineResult){
+                textDecoration = "underline";
+            }
+            else {
+                textDecoration = "normal";
+            }
             applyChanges();
         }));
     }

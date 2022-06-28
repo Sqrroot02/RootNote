@@ -22,8 +22,19 @@ public class WriteTab extends Tab {
     }
 
     private ColorPicker fontForegroundSelection;
+    public ColorPicker getFontForegroundSelection() {
+        return fontForegroundSelection;
+    }
+
     private ColorPicker fontBackgroundPicker;
+    public ColorPicker getFontBackgroundPicker() {
+        return fontBackgroundPicker;
+    }
+
     private ComboBox<String> fontSizeSelection;
+    public ComboBox<String> getFontSizeSelection(){
+        return fontSizeSelection;
+    }
 
     private ToggleGroup fontAlignmentToggle;
     private ToggleButton fontLeftAlignmentToggle;
@@ -32,9 +43,24 @@ public class WriteTab extends Tab {
     private ToggleButton fontJustifyToggle;
 
     private ToggleButton fontBoldToggle;
+    public ToggleButton getFontBoldToggle() {
+        return fontBoldToggle;
+    }
+
     private ToggleButton fontStrikeThroughToggle;
+    public ToggleButton getFontStrikeThroughToggle() {
+        return fontStrikeThroughToggle;
+    }
+
     private ToggleButton fontUnderlineToggle;
+    public ToggleButton getFontUnderlineToggle() {
+        return fontUnderlineToggle;
+    }
+
     private ToggleButton fontItalicToggle;
+    public ToggleButton getFontItalicToggle() {
+        return fontItalicToggle;
+    }
 
     private ToggleGroup fontScriptPlacementToggle;
     private ToggleButton fontSuperScriptToggle;
@@ -111,9 +137,8 @@ public class WriteTab extends Tab {
         subscriptPlacementBox.getChildren().add(fontSubScriptToggle);
 
         container.add(subToggleContainer,0,1);
-        container.add(subColorbox,1,0);
+        container.add(subColorbox,0,2);
         container.add(subscriptPlacementBox,1,1);
-
 
         setContent(container);
     }
@@ -128,5 +153,41 @@ public class WriteTab extends Tab {
     public void setFontSizeChangedListener(EventHandler handler){
         fontSizeChangedListener = handler;
         fontSizeSelection.setOnAction(fontSizeChangedListener);
+    }
+
+    private EventHandler fontForegroundListener;
+    public void setFontForegroundListener(EventHandler handler){
+        fontForegroundListener = handler;
+        fontForegroundSelection.setOnAction(fontForegroundListener);
+    }
+
+    private EventHandler fontBackgroundListener;
+    public void setFontBackgroundListener(EventHandler handler){
+        fontBackgroundListener = handler;
+        fontBackgroundPicker.setOnAction(fontBackgroundListener);
+    }
+
+    private EventHandler fontBoldListener;
+    public void setFontBoldListener(EventHandler handler) {
+        fontBoldListener = handler;
+        fontBoldToggle.setOnAction(fontBoldListener);
+    }
+
+    private EventHandler fontItalicListener;
+    public void setFontItalicListener(EventHandler handler){
+        fontItalicListener = handler;
+        fontItalicToggle.setOnAction(fontItalicListener);
+    }
+
+    private EventHandler fontStrikeThroughListener;
+    public void setFontStrikeThroughListener(EventHandler handler){
+        fontStrikeThroughListener = handler;
+        fontStrikeThroughToggle.setOnAction(fontStrikeThroughListener);
+    }
+
+    private EventHandler fontUnderlineListener;
+    public void setFontUnderlineListener(EventHandler handler) {
+        fontUnderlineListener = handler;
+        fontUnderlineToggle.setOnAction(fontUnderlineListener);
     }
 }
