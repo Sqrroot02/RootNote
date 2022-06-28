@@ -1,19 +1,20 @@
 package NotePage;
 
-import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.ToolBar;
 import javafx.scene.layout.HBox;
 
 public class SettingsFrame extends HBox {
-
     private TabPane pane;
 
-    private WriteTab drawTab;
-    private Tab writeTab;
+    private WriteTab writeTab;
+    private Tab drawTab;
     private Tab layoutTab;
     private Tab mediaTab;
+
+    public WriteTab getWriteTab() {
+        return writeTab;
+    }
 
     public SettingsFrame(){
         InitControls();
@@ -21,13 +22,13 @@ public class SettingsFrame extends HBox {
 
     private void InitControls(){
         pane = new TabPane();
-        pane.setMinHeight(300);
+        pane.setMinHeight(80);
         InitWriteTab();
     }
 
     private void InitWriteTab(){
-        drawTab = new WriteTab();
-        pane.getTabs().add(drawTab);
+        writeTab = new WriteTab();
+        pane.getTabs().add(writeTab);
         getChildren().add(pane);
     }
 

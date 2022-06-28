@@ -1,6 +1,8 @@
 package NotePage;
 
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -15,7 +17,12 @@ public class WriteTab extends Tab {
     private GridPane container;
 
     private ComboBox<String> fontFamilySelection;
+    public ComboBox<String> getFontFamilySelection() {
+        return fontFamilySelection;
+    }
+
     private ColorPicker fontForegroundSelection;
+    private ColorPicker fontBackgroundPicker;
     private ComboBox<String> fontSizeSelection;
 
     private ToggleGroup fontAlignmentToggle;
@@ -37,6 +44,7 @@ public class WriteTab extends Tab {
         return container;
     }
 
+    // Initializes all Components fore the Textmanipulation mode
     private void initComponents(){
         container = new GridPane();
 
@@ -60,12 +68,65 @@ public class WriteTab extends Tab {
         fontItalicToggle.setPrefWidth(50);
         fontItalicToggle.setText("I");
 
+        fontStrikeThroughToggle = new ToggleButton();
+        fontStrikeThroughToggle.setPrefWidth(50);
+        fontStrikeThroughToggle.setPrefWidth(50);
+        fontStrikeThroughToggle.setText("S");
+
+        fontUnderlineToggle = new ToggleButton();
+        fontUnderlineToggle.setPrefWidth(50);
+        fontUnderlineToggle.setPrefWidth(50);
+        fontUnderlineToggle.setText("U");
+
         HBox subToggleContainer = new HBox();
         subToggleContainer.getChildren().add(fontBoldToggle);
         subToggleContainer.getChildren().add(fontItalicToggle);
+        subToggleContainer.getChildren().add(fontStrikeThroughToggle);
+        subToggleContainer.getChildren().add(fontUnderlineToggle);
+
+        fontForegroundSelection = new ColorPicker();
+        fontForegroundSelection.setPrefWidth(50);
+
+        fontBackgroundPicker = new ColorPicker();
+        fontBackgroundPicker.setPrefWidth(50);
+
+        HBox subColorbox = new HBox();
+        subColorbox.getChildren().add(fontForegroundSelection);
+        subColorbox.getChildren().add(fontBackgroundPicker);
+
+        fontScriptPlacementToggle = new ToggleGroup();
+        HBox subscriptPlacementBox = new HBox();
+
+        fontSuperScriptToggle = new ToggleButton();
+        fontSuperScriptToggle.setPrefWidth(50);
+        fontSuperScriptToggle.setText("x²");
+        fontSuperScriptToggle.setToggleGroup(fontScriptPlacementToggle);
+        subscriptPlacementBox.getChildren().add(fontSuperScriptToggle);
+
+        fontSubScriptToggle = new ToggleButton();
+        fontSubScriptToggle.setText("x");
+        fontSubScriptToggle.setPrefWidth(50);
+        fontSubScriptToggle.setToggleGroup(fontScriptPlacementToggle);
+
+        subscriptPlacementBox.getChildren().add(fontSubScriptToggle);
+
         container.add(subToggleContainer,0,1);
+        container.add(subColorbox,1,0);
+        container.add(subscriptPlacementBox,1,1);
+
 
         setContent(container);
     }
 
+    private EventHandler fontFamilyChangedListener;
+    public void setFontFamilyChangedListener(EventHandler handler){
+        fontFamilyChangedListener = handler;
+        fontFamilySelection.setOnAction(fontFamilyChangedListener);
+    }
+
+    private EventHandler fontSizeChangedListener;
+    public void setFontSizeChangedListener(EventHandler handler){
+        fontSizeChangedListener = handler;
+        fontSizeSelection.setOnAction(fontSizeChangedListener);
+    }
 }

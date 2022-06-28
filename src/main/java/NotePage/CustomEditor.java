@@ -2,23 +2,18 @@ package NotePage;
 
 import Base.Helper.ColorHelper;
 import NotePage.HTMLHelper.CSSBorder;
-import javafx.css.CssMetaData;
-import javafx.css.converter.ColorConverter;
+import NotePage.HTMLHelper.WebHelper;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import org.w3c.dom.*;
-import org.w3c.dom.ranges.Range;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class CustomEditor {
@@ -29,7 +24,7 @@ public class CustomEditor {
 
     // Used Webview
     private WebView view;
-
+    private WriteTab writeOptionsTab;
     private TextSelectionChangedListener selectionChangedListener = new TextSelectionChangedListener() {
         @Override
         public void onTextChanged(String s) {
@@ -37,7 +32,7 @@ public class CustomEditor {
         }
     };
 
-    private CustomEditorCursor cursor = new CustomEditorCursor();
+    private CustomEditorCursor cursor;
     private StackPane pane;
     private String selectedString = null;
     public Element getCurrentElement(){
@@ -51,15 +46,6 @@ public class CustomEditor {
     }
 
     // Returns a bool Value whether a text is currently selected or not
-    public Boolean getIsTextSelected(){
-        if (selectedString != null && !selectedString.isEmpty()){
-            return true;
-        }
-        else {
-            return false;
-        }
-
-    }
 
     // region Properties
     // Text Alignment
@@ -188,39 +174,35 @@ public class CustomEditor {
         return result;
     }
 
-    public CustomEditor(){
+    private void applyChanges(){
+        String selectedItem = WebHelper.getSelectedNode(getEngine());
+        Element selectedElement = WebHelper.getElementById(selectedItem,getEngine());
+        selectedElement.setAttribute("style",getCss());
+    }
+
+    public CustomEditor(WriteTab writeTab){
         view = new WebView();
         pane = new StackPane(view);
+        writeOptionsTab = writeTab;
+
+        cursor = new CustomEditorCursor(getEngine());
 
         cursor.setNewPosition(UUID.randomUUID(),0);
 
-        view.getEngine().loadContent("<body><p id='" + cursor.getSelectedUUID().toString() + "' style='"+ getCss() +"'></p></body>" );
+        getEngine().loadContent("<body><p id='" + cursor.getSelectedUUID().toString() + "' style='"+ getCss() +"' contenteditable='true'></p></body>" );
         view.addEventHandler(MouseEvent.MOUSE_RELEASED,mouseReleasedEvent);
         view.addEventHandler(KeyEvent.KEY_PRESSED,keyboardPressed);
+        defMethodesWriteTab();
     }
 
     public void changePartSettings(){
-        int anchorOffset = (int) getEngine().executeScript("window.getSelection().anchorOffset");
-        int focusOffset = (int) getEngine().executeScript("window.getSelection().focusOffset");
-
-        int range = (int) getEngine().executeScript("window.getSelection().getRangeAt(0)");
-        System.out.println(range);
 
     }
 
     public EventHandler<MouseEvent> mouseReleasedEvent = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
-            selectedString = (String) getEngine().executeScript("window.getSelection().toString()");
 
-            String readId = (String) getEngine().executeScript("window.getSelection().getRangeAt(0).commonAncestorContainer.parentNode.getAttribute('id')");
-            int offset = (int) getEngine().executeScript("window.getSelection().anchorOffset");
-            if (readId != null) {
-                System.out.println(readId + " | " + offset);
-                cursor.setNewPosition(UUID.fromString(readId), offset);
-                selectionChangedListener.onTextChanged(selectedString);
-            }
-            changePartSettings();
         }
     };
 
@@ -228,52 +210,23 @@ public class CustomEditor {
     public EventHandler<KeyEvent> keyboardPressed = new EventHandler<KeyEvent>() {
         @Override
         public void handle(KeyEvent keyEvent) {
-            // Appends new Paragraph on using ENTER
-            if (keyEvent.getCode() == KeyCode.ENTER){
-                Element el = getEngine().getDocument().createElement("p");
-                el.setAttribute("style",getCss());
-                el.setTextContent("");
-                UUID newId = UUID.randomUUID();
 
-                cursor.setNewPosition(newId,0);
-
-                el.setAttribute("id",newId.toString());
-                getBody().appendChild(el);
-            }
-            // Removes left Character on using BACKSPACE
-            else if (keyEvent.getCode() == KeyCode.BACK_SPACE) {
-                if (getIsTextSelected()){
-                    getEngine().executeScript("window.getSelection().deleteFromDocument()");
-                }
-                else if (cursor.getSelectedPosition() > 0){
-                    String oldString = getCurrentElement().getTextContent();
-                    String left = oldString.substring(0,cursor.getSelectedPosition()-1);
-                    String right = oldString.substring(cursor.getSelectedPosition());
-
-                    getCurrentElement().setTextContent(left + right);
-                    cursor.setSelectedPosition(cursor.getSelectedPosition() - 1);
-                }
-            }
-            else if (keyEvent.getCode() == KeyCode.CAPS) {
-                // Nothing should happen here
-            }
-            // Appends to the TextContent a Char
-            else {
-                String character = keyEvent.getText();
-
-                String oldString = getCurrentElement().getTextContent();
-                String left = oldString.substring(0,cursor.getSelectedPosition());
-                String right = oldString.substring(cursor.getSelectedPosition());
-
-                getCurrentElement().setTextContent(left + character + right);
-                cursor.setSelectedPosition(cursor.getSelectedPosition() + 1);
-            }
         }
     };
     // endregion
     public StackPane getPane() {
         return pane;
     }
+
+    private void defMethodesWriteTab(){
+        writeOptionsTab.setFontFamilyChangedListener(((event) ->{
+            String selectedFont = writeOptionsTab.getFontFamilySelection().getSelectionModel().getSelectedItem();
+            textFontFamily = selectedFont;
+            System.out.println("yee");
+            applyChanges();
+        }));
+    }
+
 }
 
 
