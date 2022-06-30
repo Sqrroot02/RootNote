@@ -55,7 +55,6 @@ public class CustomEditor {
         return view.getEngine();
     }
 
-    // Returns a bool Value whether a text is currently selected or not
 
     // region Properties
     // Text Alignment
@@ -166,6 +165,7 @@ public class CustomEditor {
         return textTransformation;
     }
 
+    // Text Weight
     private String textWeight = "normal";
     public void setTextWeight(String textWeight) {
         this.textWeight = textWeight;
@@ -174,6 +174,7 @@ public class CustomEditor {
         return textWeight;
     }
 
+    // Font Style
     private String fontStyle = "normal";
     public void setFontStyle(String fontStyle) {
         this.fontStyle = fontStyle;
@@ -182,6 +183,7 @@ public class CustomEditor {
         return fontStyle;
     }
 
+    // Text Decorations
     private String textDecoration = "normal";
     public String getTextDecoration() {
         return textDecoration;
@@ -190,7 +192,7 @@ public class CustomEditor {
         this.textDecoration = textDecoration;
     }
 
-
+    // Table Border Styles
     private BorderStyle tableBorderStyle = BorderStyle.solid;
     public BorderStyle getTableBorderStyle(){
         return tableBorderStyle;
@@ -199,6 +201,7 @@ public class CustomEditor {
         this.tableBorderStyle = tableBorderStyle;
     }
 
+    // Table Border Color
     private Color tableBorderColor = Color.BLACK;
     public Color getTableBorderColor() {
         return tableBorderColor;
@@ -262,10 +265,8 @@ public class CustomEditor {
         @Override
         public void handle(MouseEvent mouseEvent) {
             Element activeElement = WebHelper.getActiveElement(getEngine());
-            System.out.println(activeElement.getAttribute("id") + " " + activeElement.getTagName());
-            if (activeElement.getTagName().equals("TH")){
-                System.out.println(WebHelper.getTableofCell(getEngine(),activeElement.getAttribute("id")));
-            }
+            selectedNode = activeElement;
+            //selectedNodeChangedListener.notifyAll();
         }
     };
 
@@ -367,6 +368,7 @@ public class CustomEditor {
             applyChanges();
         }));
 
+        // Appends a new Table Element to the document
         elementsTab.setAddTableListener((event -> {
             getEngine().executeScript("var table = document.createElement('table');" +
                     "table.setAttribute('id', '" + UUID.randomUUID().toString() +"' );" +
@@ -382,9 +384,47 @@ public class CustomEditor {
                     "document.body.appendChild(table);");
         }));
 
+        // Adds a new Column to an existing Table
         tableTab.setAddColumnListener((event -> {
-            String html = (String) getEngine().executeScript("document.documentElement.outerHTML");
-            System.out.println(html);
+            if (selectedNode.getTagName().equals("TH")){
+                Element tableElement = WebHelper.getTableofCell(getEngine(),selectedNode.getAttribute("id"));
+                NodeList list = tableElement.getChildNodes();
+
+                for (int i = 0; i < list.getLength(); i++) {
+                    Element nodeElement = (Element) list.item(i);
+                    getEngine().executeScript("var row = document.getElementById('"+ nodeElement.getAttribute("id") +"');" +
+                            "var newCell = document.createElement('th');" +
+                            "newCell.setAttribute('id', '" + UUID.randomUUID().toString() +"' );" +
+                            "newCell.setAttribute('contenteditable', '" + "true" + "' );" +
+                            "newCell.innerHTML += 'Stuff';" +
+                            "row.appendChild(newCell);");
+                }
+
+            }
+        }));
+
+        // Adds a new Row to an existing Table
+        tableTab.setAddRowListener((event -> {
+            if (selectedNode.getTagName().equals("TH")){
+                Element tableElement = WebHelper.getTableofCell(getEngine(),selectedNode.getAttribute("id"));
+
+                int cellLength = tableElement.getFirstChild().getChildNodes().getLength();
+                String newRowUUID = UUID.randomUUID().toString();
+
+                getEngine().executeScript("var table = document.getElementById('"+ tableElement.getAttribute("id") +"');" +
+                        "var newRow = document.createElement('tr');" +
+                        "newRow.setAttribute('id','"+ newRowUUID +"');" +
+                        "table.appendChild(newRow);");
+
+                for (int i = 0; i < cellLength; i++) {
+                    getEngine().executeScript("var row = document.getElementById('"+ newRowUUID +"');" +
+                            "var newCell = document.createElement('th');" +
+                            "newCell.setAttribute('id', '" + UUID.randomUUID().toString() +"' );" +
+                            "newCell.setAttribute('contenteditable', '" + "true" + "' );" +
+                            "newCell.innerHTML += 'Stuff';" +
+                            "row.appendChild(newCell);");
+                }
+            }
         }));
     }
 }
