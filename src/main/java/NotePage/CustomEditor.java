@@ -384,6 +384,19 @@ public class CustomEditor {
                     "document.body.appendChild(table);");
         }));
 
+        // Appends a new Paragraph to the Document
+        elementsTab.setAddParagraphListener((event -> {
+            getEngine().executeScript("var p = document.createElement('p');" +
+                    "p.setAttribute('id', '" + UUID.randomUUID().toString() +"' );" +
+                    "p.setAttribute('contenteditable', '" + "true" +"' );" +
+                    "document.body.appendChild(p);");
+        }));
+
+        // Appends a new Enumeration to the Document
+        elementsTab.setAddEnumerationListener((event -> {
+
+        }));
+
         // Adds a new Column to an existing Table
         tableTab.setAddColumnListener((event -> {
             if (selectedNode.getTagName().equals("TH")){
@@ -399,7 +412,6 @@ public class CustomEditor {
                             "newCell.innerHTML += 'Stuff';" +
                             "row.appendChild(newCell);");
                 }
-
             }
         }));
 
