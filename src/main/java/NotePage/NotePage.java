@@ -49,7 +49,7 @@ public class NotePage extends Page {
 
         SettingsFrame settings = new SettingsFrame();
 
-        VBox rightContainer = new VBox(settings,new CustomEditor(settings.getWriteTab()).getPane());
+        VBox rightContainer = new VBox(settings,new CustomEditor(settings.getWriteTab(), settings.getElementsTab(),settings.getTableTab()).getPane());
         root.setRight(rightContainer);
 
         Scene scene = new Scene(root);
@@ -79,5 +79,4 @@ public class NotePage extends Page {
             selectedHeader = t1;
         }
     };
-
 }

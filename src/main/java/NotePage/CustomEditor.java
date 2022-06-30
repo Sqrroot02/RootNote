@@ -1,10 +1,13 @@
 package NotePage;
 
+import Base.Enumerations.BorderStyle;
 import Base.Helper.ColorHelper;
 import NotePage.HTMLHelper.CSSBorder;
 import NotePage.HTMLHelper.WebHelper;
+import NotePage.Tabs.ElementsTab;
+import NotePage.Tabs.TableTab;
+import NotePage.Tabs.WriteTab;
 import javafx.event.EventHandler;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -25,6 +28,9 @@ public class CustomEditor {
     // Used Webview
     private WebView view;
     private WriteTab writeOptionsTab;
+    private ElementsTab elementsTab;
+    private TableTab tableTab;
+
     private TextSelectionChangedListener selectionChangedListener = new TextSelectionChangedListener() {
         @Override
         public void onTextChanged(String s) {
@@ -33,6 +39,10 @@ public class CustomEditor {
     };
 
     private CustomEditorCursor cursor;
+    private Element selectedNode;
+    public EventHandler selectedNodeChangedListener;
+
+
     private StackPane pane;
     private String selectedString = null;
     public Element getCurrentElement(){
@@ -179,8 +189,25 @@ public class CustomEditor {
     public void setTextDecoration(String textDecoration) {
         this.textDecoration = textDecoration;
     }
-    // endregion
 
+
+    private BorderStyle tableBorderStyle = BorderStyle.solid;
+    public BorderStyle getTableBorderStyle(){
+        return tableBorderStyle;
+    }
+    public void setTableBorderStyle(BorderStyle tableBorderStyle) {
+        this.tableBorderStyle = tableBorderStyle;
+    }
+
+    private Color tableBorderColor = Color.BLACK;
+    public Color getTableBorderColor() {
+        return tableBorderColor;
+    }
+    public void setTableBorderColor(Color tableBorderColor) {
+        this.tableBorderColor = tableBorderColor;
+    }
+
+    // endregion
     private String getCss(){
         String result = "";
         result += MessageFormat.format("color:{0};", ColorHelper.toHexString(textForegroundColor));
@@ -200,35 +227,45 @@ public class CustomEditor {
         return result;
     }
 
+    private String getTableCss(){
+        String result = "th, td {";
+        result += MessageFormat.format("border-style: {0};",tableBorderStyle.name());
+        result += MessageFormat.format("border-color: {0};", ColorHelper.toHexString(tableBorderColor));
+        result += "}";
+        return result;
+    }
+
     private void applyChanges(){
         String selectedItem = WebHelper.getSelectedNode(getEngine());
         Element selectedElement = WebHelper.getElementById(selectedItem,getEngine());
         selectedElement.setAttribute("style",getCss());
     }
 
-    public CustomEditor(WriteTab writeTab){
+    public CustomEditor(WriteTab writeTab, ElementsTab elTab, TableTab taTab){
         view = new WebView();
         pane = new StackPane(view);
+        elementsTab = elTab;
         writeOptionsTab = writeTab;
+        tableTab = taTab;
 
         cursor = new CustomEditorCursor(getEngine());
 
         cursor.setNewPosition(UUID.randomUUID(),0);
 
-        getEngine().loadContent("<body><p id='" + cursor.getSelectedUUID().toString() + "' style='"+ getCss() +"' contenteditable='true'></p></body>" );
+        getEngine().loadContent("<body><div id='" + UUID.randomUUID().toString() + "' style='"+ getCss() +"' contenteditable='true'></div></body>" );
         view.addEventHandler(MouseEvent.MOUSE_RELEASED,mouseReleasedEvent);
         view.addEventHandler(KeyEvent.KEY_PRESSED,keyboardPressed);
         defMethodesWriteTab();
     }
 
-    public void changePartSettings(){
-
-    }
-
     public EventHandler<MouseEvent> mouseReleasedEvent = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent mouseEvent) {
-
+            Element activeElement = WebHelper.getActiveElement(getEngine());
+            System.out.println(activeElement.getAttribute("id") + " " + activeElement.getTagName());
+            if (activeElement.getTagName().equals("TH")){
+                System.out.println(WebHelper.getTableofCell(getEngine(),activeElement.getAttribute("id")));
+            }
         }
     };
 
@@ -239,6 +276,9 @@ public class CustomEditor {
 
         }
     };
+
+
+
     // endregion
     public StackPane getPane() {
         return pane;
@@ -326,8 +366,27 @@ public class CustomEditor {
             }
             applyChanges();
         }));
-    }
 
+        elementsTab.setAddTableListener((event -> {
+            getEngine().executeScript("var table = document.createElement('table');" +
+                    "table.setAttribute('id', '" + UUID.randomUUID().toString() +"' );" +
+                    "table.setAttribute('style', '" + getTableCss() + "');" +
+                    "var firstRow = document.createElement('tr');" +
+                    "firstRow.setAttribute('id', '" + UUID.randomUUID().toString() +"' );" +
+                    "var firstCell = document.createElement('th');" +
+                    "firstCell.setAttribute('id', '" + UUID.randomUUID().toString() +"' );" +
+                    "firstCell.setAttribute('contenteditable', '" + "true" +"' );" +
+                    "firstCell.innerHTML += 'Extra stuff';" +
+                    "firstRow.appendChild(firstCell);" +
+                    "table.appendChild(firstRow);" +
+                    "document.body.appendChild(table);");
+        }));
+
+        tableTab.setAddColumnListener((event -> {
+            String html = (String) getEngine().executeScript("document.documentElement.outerHTML");
+            System.out.println(html);
+        }));
+    }
 }
 
 

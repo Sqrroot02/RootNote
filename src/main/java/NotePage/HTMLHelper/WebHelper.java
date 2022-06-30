@@ -1,5 +1,6 @@
 package NotePage.HTMLHelper;
 
+import NotePage.Tabs.ElementsTab;
 import javafx.scene.web.WebEngine;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,5 +37,21 @@ public class WebHelper {
             }
         }
         return null;
+    }
+
+    public static Element getBodyElement(WebEngine engine){
+        return (Element)engine.getDocument().getElementsByTagName("body").item(0);
+    }
+
+    public static Element getActiveElement(WebEngine engine){
+        return (Element)engine.executeScript("document.activeElement");
+    }
+
+    public static Element getTableofCell(WebEngine engine, String cellid){
+        Element cellContainer = (Element)engine.executeScript("document.getElementById('"+ cellid +"')");
+        Element cell = (Element)cellContainer.getParentNode();
+        Element table = (Element)cell.getParentNode();
+
+        return table;
     }
 }

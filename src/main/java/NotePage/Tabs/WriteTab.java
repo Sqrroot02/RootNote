@@ -1,4 +1,4 @@
-package NotePage;
+package NotePage.Tabs;
 
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -12,6 +12,7 @@ public class WriteTab extends Tab {
 
     public WriteTab(){
         initComponents();
+        setText("Text");
     }
 
     private GridPane container;
@@ -86,21 +87,17 @@ public class WriteTab extends Tab {
 
         fontBoldToggle = new ToggleButton();
         fontBoldToggle.setPrefWidth(50);
-        fontBoldToggle.setPrefWidth(50);
         fontBoldToggle.setText("B");
 
         fontItalicToggle = new ToggleButton();
-        fontItalicToggle.setPrefWidth(50);
         fontItalicToggle.setPrefWidth(50);
         fontItalicToggle.setText("I");
 
         fontStrikeThroughToggle = new ToggleButton();
         fontStrikeThroughToggle.setPrefWidth(50);
-        fontStrikeThroughToggle.setPrefWidth(50);
         fontStrikeThroughToggle.setText("S");
 
         fontUnderlineToggle = new ToggleButton();
-        fontUnderlineToggle.setPrefWidth(50);
         fontUnderlineToggle.setPrefWidth(50);
         fontUnderlineToggle.setText("U");
 
