@@ -10,5 +10,13 @@ public class Page {
     public void setUsedScene(Scene scene){
         usedScene = scene;
     }
+
+    private Stage usedStage;
+    public void setStage(Stage stage){
+        usedStage = stage;
+    }
+    public Stage getUsedStage(){
+        return  usedStage;
+    }
     private Scene usedScene;
 }

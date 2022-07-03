@@ -122,16 +122,26 @@ public class TableTab extends Tab {
     }
 
     private EventHandler addColumnListener;
-
     public void setAddColumnListener(EventHandler handler) {
         addColumnListener = handler;
         addColumnButton.setOnAction(addColumnListener);
     }
 
     private EventHandler addRowListener;
-
     public void setAddRowListener(EventHandler handler) {
         addRowListener = handler;
         addRowButton.setOnAction(addRowListener);
+    }
+
+    private EventHandler borderStyleListener;
+    public void setBorderStyleListener(EventHandler handler) {
+        borderStyleListener = handler;
+        borderStyleCombobox.setOnAction(borderStyleListener);
+    }
+
+    private EventHandler borderColorListener;
+    public void setBorderColorListener(EventHandler handler) {
+        borderColorListener = handler;
+        borderColorPicker.setOnAction(borderColorListener);
     }
 }

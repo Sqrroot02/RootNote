@@ -19,6 +19,7 @@ import Base.Page;
 
 public class NotePage extends Page {
     public NotePage(){
+        super();
         init();
     }
 
@@ -49,7 +50,7 @@ public class NotePage extends Page {
 
         SettingsFrame settings = new SettingsFrame();
 
-        VBox rightContainer = new VBox(settings,new CustomEditor(settings.getWriteTab(), settings.getElementsTab(),settings.getTableTab()).getPane());
+        VBox rightContainer = new VBox(settings,new CustomEditor(settings.getWriteTab(), settings.getElementsTab(),settings.getTableTab(),super.getUsedStage()).getPane());
         root.setRight(rightContainer);
 
         Scene scene = new Scene(root);

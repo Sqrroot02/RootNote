@@ -31,7 +31,9 @@ public class HelloApplication extends Application {
         window = stage;
         stage.setTitle("Hello!");
         stage.show();
+        StaticApplication.usedStage = window;
         NotePage page = new NotePage();
+        page.setStage(window);
         setCurrentScene(page.getScene());
     }
 
